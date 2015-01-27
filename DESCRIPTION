@@ -3,6 +3,12 @@ Title: Interactive functions for the DCF course
 Version: 0.1
 Authors@R: "Daniel Kaplan <dtkaplan@gmail.com> [aut, cre]"
 Description: DCFinteractive provides functions with a graphical user interface. It's separate from the DCF package to avoid accidental use of interactive functions in non-interactive modes, such as Rmd files.
-Depends: R (>= 3.1.2)
+Depends: R (>= 3.1.2),
+  ggplot2,
+  dplyr,
+  shiny,
+  manipulate
+Suggests:
+  rworldmap
 License: All rights reserved.
 LazyData: true
