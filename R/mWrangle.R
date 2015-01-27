@@ -1,28 +1,28 @@
 #' Help with dplyr command construction
 #'
-#' \code{lintr()} opens an interactive (shiny) app that lets you edit
+#' \code{mWrangle()} opens an interactive (shiny) app that lets you edit
 #' interactively a
 #' potentially complex \code{dplyr} chain of commands. It provides documentation
 #' and argument vetting.
 #'
-#' On return, \code{lintr()} opens and editor to display and run the command.  Often,
+#' On return, \code{mWrangle()} opens and editor to display and run the command.  Often,
 #' the user will cut and paste this into a chunk in an Rmd document.
 #'
-#' The name "lintr" refers to the famous \code{lint} program distributed with UNIX
-#' that checks C program files against common mistakes.
+#' The "m" in "mWrangle" follows the convention that a leading "m"
+#' indicates an interactive command.
 #'
-#' @rdname lintr
+#' @rdname mWrangle
 #' @param Input  A data frame or piped input from a chain of \code{dplyr} commands.
 #'
 #' @examples
 #' \dontrun{require(mosaicData)
-#' lintr( KidsFeet %>% select( sex, length, width, biggerfoot) )
+#' mWrangle( KidsFeet %>% select( sex, length, width, biggerfoot) )
 #' }
 
 
 #' @export
 
-lintr <- function( Input ) {
+mWrangle <- function( Input ) {
 
   # Grab the name of the input.
   nameOfInputDF <- as.character(substitute( Input ))
@@ -150,11 +150,15 @@ lintr <- function( Input ) {
 
   #shinyApp(
     ui = fluidPage(
-      tags$head(tags$style(type="text/css", "#arguments {width: 900px;}")),
+      tags$head(tags$style(type="text/css",
+                           "#arguments {width: 300px;}")),
       tags$head(tags$style(type="text/css", "#description {color: blue;}")),
       tags$head(tags$style(type="text/css",
           "#assembled {font-family: Courier; font-size: 14pt; width: 600pt;}")),
       tags$head(tags$style(type="text/css",".error {color: red;}")),
+      tags$head(tags$style(type="text/css", "#runIt {margin-top: 22px;}")),
+      tags$head(tags$style(type="text/css", "#acceptCurrentCommand {margin-top: 22px;}")),
+      tags$head(tags$style(type="text/css", "#allDone {margin-top: 22px;}")),
       # Results section
       fluidRow(
         column(4,
@@ -205,16 +209,16 @@ lintr <- function( Input ) {
                    "arguments",
                    "Arguments",value="")
           ),
-          column(2, p("Test your new statement."),
+          column(1,
                  actionButton(
-                   "runIt",
-                   HTML("<b>Try it!</b>"))
+                   "runIt", "Test")
+ #                  HTML("<b>Try it!</b>"))
           ),
-          column(2, actionButton(
+          column(1, actionButton(
             "acceptCurrentCommand",
-            "Accept the command & start forming a new one."
+            "Accept"
           )),
-          column(2, actionButton("allDone","All Done"))
+          column(1, actionButton("allDone","Quit"))
         ),
         fluidRow( textOutput( "description"),htmlOutput("warnings") )
 
