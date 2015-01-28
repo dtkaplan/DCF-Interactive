@@ -11,9 +11,7 @@ A package providing the function `mWrangle()`, which allows you to edit interact
 For instance
 
     require( mosaicData )
-    mWrangle(
-      KidsFeet %>%
-        group_by(sex) 
-    )
+    mWrangle(KidsFeet)
+    
 
-On return, `mWrangle()` opens an editor with the completed command.  You can run this, or cut and paste it into a script or Rmd file.
+When quitted, `mWrangle()` opens an editor with the completed command.  You can run this, or cut and paste it into a script or Rmd file.

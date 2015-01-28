@@ -152,10 +152,13 @@ mWrangle <- function( Input ) {
     ui = fluidPage(
       tags$head(tags$style(type="text/css",
                            "#arguments {width: 300px;}")),
-      tags$head(tags$style(type="text/css", "#description {color: blue;}")),
       tags$head(tags$style(type="text/css",
-          "#assembled {font-family: Courier; font-size: 14pt; width: 600pt;}")),
+                           "#description {color: blue;}")),
+      tags$head(tags$style(type="text/css",
+          "#assembled {font-family: Courier; font-size: 11pt; width: 400pt; height: 50pt;}")),
       tags$head(tags$style(type="text/css",".error {color: red;}")),
+      tags$head(tags$style(type="text/css", "#outTable {font-size: 8pt;}")),
+      tags$head(tags$style(type="text/css", "#inTable {font-size: 8pt;}")),
       tags$head(tags$style(type="text/css", "#runIt {margin-top: 22px;}")),
       tags$head(tags$style(type="text/css", "#acceptCurrentCommand {margin-top: 22px;}")),
       tags$head(tags$style(type="text/css", "#allDone {margin-top: 22px;}")),
@@ -164,7 +167,7 @@ mWrangle <- function( Input ) {
         column(4,
                p("Process starts with ... "),
                HTML(paste0(
-                 '<textarea id="assembled" rows="6" cols="120">',
+                 '<textarea id="assembled" rows="5" cols="80">',
                  startingCommand,
                  '</textarea>')
                  )
@@ -229,7 +232,9 @@ mWrangle <- function( Input ) {
         tabPanel( title="Result",
                   value="Result", # Don't change this
                   htmlOutput("outputGroups"),
-                  tableOutput('outTable')),
+                  HTML("<small>"),
+                  tableOutput('outTable'),
+                  HTML("</small>")),
         tabPanel( title="Hints",
                   value="Hints", # Don't change this
                   htmlOutput("commonArgs")),
@@ -462,7 +467,7 @@ mWrangle <- function( Input ) {
 #      })
     } # end of server
 #  ) # end of shinyApp()
-
+#  rstudio::viewer("127.0.0.1")
   resultString <- runApp( list(ui=ui,server=server))
   tmpName <- tempfile( pattern="commandEdit", fileext=".R")
   fileCon <- file( tmpName )
