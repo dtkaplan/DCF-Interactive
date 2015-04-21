@@ -4,11 +4,11 @@
 #' for different aspects of a plot can be selected interactively.  The \code{ggplot2}
 #' command for generating the plot currently being displayed is copied to the console,
 #' whence it can be copied to a document for later direct, non-interactive use.
-#' 
+#'
 #' @rdname mPlots
 #' @aliases mPlots, mScatter, mBar, mWorldMap
 #' @param dat Dataframe containing the variables that might be used in the plot.
-#' @return Nothing.  Just for side effects.  
+#' @return Nothing.  Just for side effects.
 #' @export
 
 mScatter <- function(dat) {
@@ -99,9 +99,13 @@ varsByType = function(dat) {
   }
   nm = names(dat)
   type = nm
-  for (k in 1:length(dat)) type[k] <- class(dat[[k]])
-  numberNames <- v2list(nm[type %in% c("integer","numeric")])
-  factorNames <- v2list(nm[type %in% c("factor","character","logical","ordered")])
+  for (k in 1:length(dat)) {
+    type[k] <- class(dat[[k]])
+    if (type[k] %in% c("integer", "numeric") && length(unique(dat[k]) < 100))
+      type[k] <- "smallNlevels"
+  }
+  numberNames <- v2list(nm[type %in% c("integer","numeric","smallNlevels")])
+  factorNames <- v2list(nm[type %in% c("factor","character","logical","ordered","smallNlevels")])
   return( list( c=factorNames, q=numberNames, all=v2list(nm) ) )
 }
 # Prepend a list with NA for optional items
@@ -146,8 +150,8 @@ scatterString <- function(s){
   if (s$model=="linear")
     res <- paste(res, "+ stat_smooth(method=lm)")
   if (s$model=="smoother")
-    res <- paste(res, "+ stat_smooth(method=loess)") 
- 
+    res <- paste(res, "+ stat_smooth(method=loess)")
+
   return(res)
 }
 
@@ -157,16 +161,16 @@ barString <- function(s){
   if( !is.na(s$orderx))
     xStr <- paste("reorder(",s$x,",",s$orderx,")",sep="")
   fillStr <- if( is.null(s$fill) || is.na(s$fill) ) ")" else paste(",fill=",s$fill,")",sep="")
-  orderStr <- if( is.null(s$ordery) || is.na(s$ordery) | is.null(s$fill) || is.na(s$fill) ) " " else 
+  orderStr <- if( is.null(s$ordery) || is.na(s$ordery) | is.null(s$fill) || is.na(s$fill) ) " " else
     paste(",order=reorder(",s$fill,",",s$ordery,")",sep="")
   aesStr <- paste("aes(x=",xStr,",y=",s$y, orderStr,fillStr,sep="")
   res <- paste("ggplot(data=",s$dat,",",aesStr,")",sep="")
   res<-paste(res,"+geom_bar(stat='identity',position=",s$position,"(width=.9))", sep="")
-  if( !is.null(s$colors) && !is.na(s$colors)) 
+  if( !is.null(s$colors) && !is.na(s$colors))
     res <- paste(res,"+scale_fill_brewer(type='",s$colors,"',palette=",s$palette,")",sep="")
-  if (s$sideways) 
+  if (s$sideways)
     res <- paste(res, "+ theme(axis.text.x=element_text(angle=60,hjust=1))")
-  if (!is.null(s$facet) && !is.na(s$facetx)) 
+  if (!is.null(s$facet) && !is.na(s$facetx))
     res <- paste(res, "+ facet_wrap(~",s$facetx,",ncol=3)",sep="")
   return(res)
 }
@@ -194,8 +198,8 @@ mapString <- function(s){
   res <- paste(res, "par(mai=c(0,0,0.2,0), xaxs='i',yaxs='i') ;",sep="")
   if (!is.na(s$categoryName)) { # plot categories or bubbles
     if (s$bubbles){
-      res <-paste(res, ".mp. <- mapBubbles(.s., nameZColour='", 
-                  s$categoryName,"'", 
+      res <-paste(res, ".mp. <- mapBubbles(.s., nameZColour='",
+                  s$categoryName,"'",
                   ifelse( is.null(s$plotVarName),"",
                           paste(",nameZSize='",s$plotVarName,"'",sep="") ),
                   ",mapRegion='",s$region,"')",sep="")
@@ -209,7 +213,7 @@ mapString <- function(s){
     if (!is.na(s$plotVarName)) { # color countries on a continuous scale
       res <- paste(res, ".mp. <- mapCountryData(.s., nameColumnToPlot='",
                    s$plotVarName,"', addLegend=FALSE,mapRegion='",s$region,"'); ", sep="")
-      res <- paste(res, 
+      res <- paste(res,
                "do.call(addMapLegend, c(.mp., legendWidth=.5,legendMar=2))",
                sep="")
     }
