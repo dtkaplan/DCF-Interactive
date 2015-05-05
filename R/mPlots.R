@@ -6,41 +6,11 @@
 #' whence it can be copied to a document for later direct, non-interactive use.
 #'
 #' @rdname mPlots
-#' @aliases mScatter, mBar, mUSMap, mWorldMap, mDistribution
+#' @aliases mScatter mBar mUSMap mWorldMap mDistribution
 #' @param data Dataframe containing the variables that might be used in the plot.
-#' @param key name of variable holding the state or country ID
-#' @param fill name of variable to use for the cholopleth map
+#' @param key name of variable holding the state or country ID(for mWorldMap and mUSMap only)
+#' @param fill name of variable to use for the cholopleth map (for mWorldMap and mUSMap only)
 #' @return Nothing.  Just for plotting side effects.
-#' @export
-mUSMap <-  function(data=NULL, key=NULL, fill=NULL, ...) {
-  dataName <- as.character(substitute(data))
-  key <- as.character(substitute(key))
-  fill <- as.character(substitute(fill))
-  vars <- names(data)
-  if(is.null(data)) stop("No data provided.")
-  if( is.null(fill)) stop("No variable provided for fill")
-  if( is.null(key)) stop("No variable provided for key")
-  if(! key %in% vars) stop(paste(key, "is not a variable in", dataName))
-  if(! fill %in% vars) stop(paste(fill, "is not a variable in", dataName))
-
-  mosaic::mUSMap(data,key=key,fill=fill, ...)
-}
-#' @export
-mWorldMap <-  function(data=NULL, key=NULL, fill=NULL, ...) {
-  if(missing(key)) stop("Must specify variable for 'key' argument.")
-  if(missing(fill)) stop("Must specify variable for 'fill' argument")
-  dataName <- as.character(substitute(data))
-  key <- as.character(substitute(key))
-  fill <- as.character(substitute(fill))
-  vars <- names(data)
-  if(is.null(data)) stop("No data provided.")
-  if( is.null(fill)) stop("No variable provided for fill")
-  if(! key %in% vars) stop(paste(key, "is not a variable in", dataName))
-  if(! fill %in% vars) stop(paste(fill, "is not a variable in", dataName))
-
-  mosaic::mWorldMap(data,key=key,fill=fill, ...)
-}
-
 #' @export
 mScatter <- function(dat) {
   if(!require(manipulate)) error("Must install 'manipulate' package in RStudio.")
@@ -72,11 +42,12 @@ mDistribution <- function (data, format = "histogram",default=format,
   default <- match.arg(default, plotTypes)
   system <- match.arg(system)
   dataName <- substitute(data)
-  return(eval(parse(text = paste("mUniplot(", dataName, ", default=default, system=system, show=show, title=title)"))))
+  return(eval(parse(text = paste("mUniplot(", dataName, ", default='histogram', system='ggplot2', show=FALSE, title='')"))))
 }
 
-# ===========================
-mBarOrig <- function(dat) {
+#' @rdname mPlots
+#' @export
+mBar <- function(dat) {
   if(!require(manipulate)) error("Must install 'manipulate' package in RStudio.")
   df = substitute(dat)
   nm = varsByType(head(dat))
@@ -104,6 +75,39 @@ mBarOrig <- function(dat) {
              sideways=checkbox(label="Sideways Labels")
   )
 }
+#' @rdname mPlots
+#' @export
+mUSMap <-  function(data=NULL, key=NULL, fill=NULL, ...) {
+  dataName <- as.character(substitute(data))
+  key <- as.character(substitute(key))
+  fill <- as.character(substitute(fill))
+  vars <- names(data)
+  if(is.null(data)) stop("No data provided.")
+  if( is.null(fill)) stop("No variable provided for fill")
+  if( is.null(key)) stop("No variable provided for key")
+  if(! key %in% vars) stop(paste(key, "is not a variable in", dataName))
+  if(! fill %in% vars) stop(paste(fill, "is not a variable in", dataName))
+
+  mosaic::mUSMap(data,key=key,fill=fill, ...)
+}
+#' @rdname mPlots
+#' @export
+mWorldMap <-  function(data=NULL, key=NULL, fill=NULL, ...) {
+  if(missing(key)) stop("Must specify variable for 'key' argument.")
+  if(missing(fill)) stop("Must specify variable for 'fill' argument")
+  dataName <- as.character(substitute(data))
+  key <- as.character(substitute(key))
+  fill <- as.character(substitute(fill))
+  vars <- names(data)
+  if(is.null(data)) stop("No data provided.")
+  if( is.null(fill)) stop("No variable provided for fill")
+  if(! key %in% vars) stop(paste(key, "is not a variable in", dataName))
+  if(! fill %in% vars) stop(paste(fill, "is not a variable in", dataName))
+
+  mosaic::mWorldMap(data,key=key,fill=fill, ...)
+}
+
+
 
 
 # Utilities
