@@ -11,6 +11,16 @@
 #' @param key name of variable holding the state or country ID(for mWorldMap and mUSMap only)
 #' @param fill name of variable to use for the cholopleth map (for mWorldMap and mUSMap only)
 #' @return Nothing.  Just for plotting side effects.
+#'
+#' @examples \dontrun{
+#'   mScatter(HappinessIndex) # the use menu to map variables to aesthetics
+#'   Counts <-
+#'     Minneapolis2013 %>%
+#'     group_by(First, Precinct) %>%
+#'     summarise(vote_count=n())
+#'   mBar(Counts)
+#'   mWorldMap(CountryData, key=country, fill=fert)
+#' }
 #' @export
 mScatter <- function(dat) {
   if(!require(manipulate)) error("Must install 'manipulate' package in RStudio.")

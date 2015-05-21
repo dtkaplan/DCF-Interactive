@@ -35,4 +35,15 @@ for different aspects of a plot can be selected interactively.  The \code{ggplot
 command for generating the plot currently being displayed is copied to the console,
 whence it can be copied to a document for later direct, non-interactive use.
 }
+\examples{
+\dontrun{
+  mScatter(HappinessIndex) # the use menu to map variables to aesthetics
+  Counts <-
+    Minneapolis2013 \%>\%
+    group_by(First, Precinct) \%>\%
+    summarise(vote_count=n())
+  mBar(Counts)
+  mWorldMap(CountryData, key=country, fill=fert)
+}
+}
 
